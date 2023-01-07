@@ -9,6 +9,7 @@ import HTTP_STATUS from 'http-status-codes';
 import { Server } from 'socket.io';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
+import Logger from 'bunyan';
 import 'express-async-errors';
 import applicationRoutes from './routes';
 
@@ -16,6 +17,7 @@ import { config } from './config';
 import { CustomError, IErrorResponse } from './shared/globals/helpers/error-handler';
 
 const SERVER_PORT = 5000;
+const log: Logger = config.createLogger('server');
 
 export class TimoServer {
   private app: Application;
@@ -38,7 +40,7 @@ export class TimoServer {
         name: 'session',
         keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
         maxAge: 24 * 7 * 3600000,
-        secure: config.NODE_ENV !== 'development',
+        secure: config.NODE_ENV !== 'development'
       })
     );
     app.use(hpp());
@@ -48,7 +50,7 @@ export class TimoServer {
         origin: config.CLIENT_URL,
         credentials: true,
         optionsSuccessStatus: 200,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
   }
@@ -69,7 +71,7 @@ export class TimoServer {
     });
 
     app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
-      console.log(error);
+      log.error(error);
       if (error instanceof CustomError) {
         return res.status(error.statusCode).json(error.serializeErrors());
       }
@@ -84,7 +86,7 @@ export class TimoServer {
       this.startHttpServer(httpServer);
       this.socketIOConnections(socketIO);
     } catch (err) {
-      console.log(err);
+      log.error(err);
     }
   }
 
@@ -92,8 +94,8 @@ export class TimoServer {
     const io: Server = new Server(httpServer, {
       cors: {
         origin: config.CLIENT_URL,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      },
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      }
     });
     const publishClient = createClient({ url: config.REDIS_HOST });
     const subscribeClient = publishClient.duplicate();
@@ -104,9 +106,9 @@ export class TimoServer {
   }
 
   private startHttpServer(httpServer: http.Server): void {
-    console.log(`Server has started wirh process ${process.pid}`);
+    log.info(`Server has started wirh process ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
-      console.log(`Server running on port ${SERVER_PORT}`);
+      log.info(`Server running on port ${SERVER_PORT}`);
     });
   }
 
