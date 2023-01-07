@@ -6,6 +6,9 @@ import hpp from 'hpp';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import HTTP_STATUS from 'http-status-codes';
+import { Server } from 'socket.io';
+import { createClient } from 'redis';
+import { createAdapter } from '@socket.io/redis-adapter';
 import 'express-async-errors';
 
 import { config } from './config';
@@ -61,17 +64,35 @@ export class TimoServer {
   private async startServer(app: Application): Promise<void> {
     try {
       const httpServer: http.Server = new http.Server(app);
+      const socketIO: Server = await this.createSocketIO(httpServer);
       this.startHttpServer(httpServer);
+      this.socketIOConnections(socketIO);
     } catch (err) {
       console.log(err);
     }
   }
 
-  private createSocketIO(httpServer: http.Server): void {}
+  private async createSocketIO(httpServer: http.Server): Promise<Server> {
+    const io: Server = new Server(httpServer, {
+      cors: {
+        origin: config.CLIENT_URL,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      },
+    });
+    const publishClient = createClient({ url: config.REDIS_HOST });
+    const subscribeClient = publishClient.duplicate();
+    await Promise.all([publishClient.connect(), subscribeClient.connect()]);
+    io.adapter(createAdapter(publishClient, subscribeClient));
+
+    return io;
+  }
 
   private startHttpServer(httpServer: http.Server): void {
+    console.log(`Server has started wirh process ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
       console.log(`Server running on port ${SERVER_PORT}`);
     });
   }
+
+  private socketIOConnections(io: Server): void {}
 }
