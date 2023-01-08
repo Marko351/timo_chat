@@ -1,0 +1,58 @@
+import HTTP_STATUS from 'http-status-codes';
+import { ObjectId } from 'mongodb';
+import { Request, Response } from 'express';
+import { BadRequestError } from '@global/helpers/error-handler';
+import { IAuthDocument } from '@auth/interfaces/auth.interface';
+import { ISignUpData } from '@auth/interfaces/auth.interface';
+import { joiValidation } from '@global/decorators/joi-validation.decorator';
+import { signupSchema } from '@auth/schemes/signup';
+import { authService } from '@service/db/auth.service';
+import { Helpers } from '@global/helpers/helpers';
+import { UploadApiResponse } from 'cloudinary';
+import { uploads } from '@global/helpers/cloudinary-upload';
+
+export class SignUp {
+  @joiValidation(signupSchema)
+  static async create(req: Request, res: Response): Promise<void> {
+    const { username, email, password, avatarColor, avatarImage } = req.body;
+
+    const checkIfUserExists: IAuthDocument = await authService.getUserByUsernameOrEmail(username, email);
+
+    if (checkIfUserExists) {
+      throw new BadRequestError('Invalid Credentials');
+    }
+
+    const authObjectId: ObjectId = new ObjectId();
+    const userObjectId: ObjectId = new ObjectId();
+    const uId = `${Helpers.generateRandomIntegers(12)}`;
+    const authData: IAuthDocument = SignUp.prototype.signupData({
+      _id: authObjectId,
+      uId,
+      username,
+      email,
+      password,
+      avatarColor
+    });
+    const result: UploadApiResponse = (await uploads(avatarImage, `${userObjectId}`, true, true)) as UploadApiResponse;
+
+    if (!result?.public_id) {
+      throw new BadRequestError('File upload: Error occurred, try again.');
+    }
+
+    res.status(HTTP_STATUS.CREATED).json({ message: 'User created!', authData });
+  }
+
+  private signupData(data: ISignUpData): IAuthDocument {
+    const { _id, username, email, uId, password, avatarColor } = data;
+
+    return {
+      _id,
+      uId,
+      username: Helpers.firstLetterUpercase(username),
+      email: email.toLowerCase(),
+      password,
+      avatarColor,
+      createdAt: new Date()
+    } as IAuthDocument;
+  }
+}
