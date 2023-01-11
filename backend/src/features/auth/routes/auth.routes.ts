@@ -1,3 +1,4 @@
+import { SignIn } from '@auth/controllers/signin.controller';
 import { SignUp } from '@auth/controllers/signup.controller';
 import { Router } from 'express';
 
@@ -10,6 +11,7 @@ class AuthRoutes {
 
   public routes(): Router {
     this.router.post('/signup', SignUp.create);
+    this.router.post('/signin', SignIn.read);
 
     return this.router;
   }

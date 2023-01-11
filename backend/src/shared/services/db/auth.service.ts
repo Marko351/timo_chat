@@ -13,6 +13,12 @@ class AuthService {
     return user;
   }
 
+  public async getUserByUsername(username: string): Promise<IAuthDocument> {
+    const user: IAuthDocument = (await AuthModel.findOne({ username: Helpers.firstLetterUpercase(username) }).exec()) as IAuthDocument;
+
+    return user;
+  }
+
   public async createAuthUser(data: IAuthDocument): Promise<void> {
     await AuthModel.create(data);
   }
