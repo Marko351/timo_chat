@@ -16,4 +16,12 @@ export class Helpers {
     }
     return parseInt(result, 10);
   }
+
+  static parseJson(prop: string): any {
+    try {
+      return JSON.parse(prop);
+    } catch (err) {
+      return prop;
+    }
+  }
 }

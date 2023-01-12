@@ -1,23 +1,14 @@
 import HTTP_STATUS from 'http-status-codes';
-import { ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
 import { BadRequestError } from '@global/helpers/error-handler';
 import { IAuthDocument } from '@auth/interfaces/auth.interface';
-import { ISignUpData } from '@auth/interfaces/auth.interface';
 import { joiValidation } from '@global/decorators/joi-validation.decorator';
-import { signupSchema } from '@auth/schemes/signup';
 import { authService } from '@service/db/auth.service';
-import { Helpers } from '@global/helpers/helpers';
-import { UploadApiResponse } from 'cloudinary';
-import { uploads } from '@global/helpers/cloudinary-upload';
-import { IUserDocument } from '@user/interfaces/user.interface';
-import { UserCache } from '@service/redis/user.cache';
-import { omit } from 'lodash';
 import JWT from 'jsonwebtoken';
-import { authQueue } from '@service/queues/auth.queue';
-import { userQueue } from '@service/queues/user.queue';
 import { config } from '@root/config';
 import { loginSchema } from '@auth/schemes/signin';
+import { IUserDocument } from '@user/interfaces/user.interface';
+import { userService } from '@service/db/user.service';
 
 export class SignIn {
   @joiValidation(loginSchema)
@@ -34,9 +25,11 @@ export class SignIn {
       throw new BadRequestError('Invalid Credentials');
     }
 
+    const user: IUserDocument = await userService.getUserByAuthId(`${existingUser._id}`);
+
     const userJwt: string = JWT.sign(
       {
-        userId: existingUser._id,
+        userId: user._id,
         uId: existingUser.uId,
         email: existingUser.email,
         username: existingUser.username,
@@ -46,6 +39,11 @@ export class SignIn {
     );
     req.session = { jwt: userJwt };
 
-    res.status(HTTP_STATUS.CREATED).json({ message: 'User login successfully!', user: existingUser, token: userJwt });
+    const userDocument: IUserDocument = {
+      ...user,
+      authId: existingUser!._id
+    } as IUserDocument;
+
+    res.status(HTTP_STATUS.CREATED).json({ message: 'User login successfully!', user: userDocument, token: userJwt });
   }
 }

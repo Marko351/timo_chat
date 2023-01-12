@@ -54,7 +54,7 @@ export class SignUp {
     await userCahche.saveUserToCache(`${userObjectId}`, uId, userDataForCache);
 
     // Add to queue
-    authQueue.addAuthUserJob('addAuthUserToDB', { value: userDataForCache });
+    authQueue.addAuthUserJob('addAuthUserToDB', { value: authData });
     userQueue.addUserJob('addUserToDB', { value: userDataForCache });
 
     const userJwt: string = SignUp.signToken(authData, userObjectId);
