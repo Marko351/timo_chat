@@ -23,7 +23,7 @@ withCredentials: true
 
 {
   "username": "markk351",
-  "password": "peradetlic"
+  "password": "balansjogurt"
 }
 
 ###
@@ -37,3 +37,24 @@ GET {{baseUrl}}/{{urlPath}}/currentuser
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+
+###
+POST {{baseUrl}}/{{urlPath}}/forgot-password
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "email": "test@test.com"
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/reset-password/5f55cfcc157a0027108f6a79d22bc951c37fb867
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "password": "balansjogurt",
+  "confirmPassword": "balansjogurt"
+}
