@@ -22,13 +22,13 @@ const config: Config.InitialOptions = {
   },
   coverageReporters: ['text-summary', 'lcov'],
   moduleNameMapper: {
-    '@auth/(.*)': ['<root>/src/features/auth/$1'],
-    '@user/(.*)': ['<root>/src/features/user/$1'],
-    '@global/(.*)': ['<root>/src/shared/globals/$1'],
-    '@service/(.*)': ['<root>/src/shared/services/$1'],
-    '@socket/(.*)': ['<root>/src/shared/sockets/$1'],
-    '@worker/(.*)': ['<root>/src/shared/workers/$1'],
-    '@root/(.*)': ['<root>/src/$1']
+    '@auth/(.*)': ['<rootDir>/src/features/auth/$1'],
+    '@user/(.*)': ['<rootDir>/src/features/user/$1'],
+    '@global/(.*)': ['<rootDir>/src/shared/globals/$1'],
+    '@service/(.*)': ['<rootDir>/src/shared/services/$1'],
+    '@socket/(.*)': ['<rootDir>/src/shared/sockets/$1'],
+    '@worker/(.*)': ['<rootDir>/src/shared/workers/$1'],
+    '@root/(.*)': ['<rootDir>/src/$1']
   }
 };
 
