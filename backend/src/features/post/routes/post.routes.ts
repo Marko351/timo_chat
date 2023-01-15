@@ -1,5 +1,6 @@
 import { authMiddleware } from '@global/helpers/auth-middleware';
 import { CreatePost } from '@post/controllers/create-post.controller';
+import { GetPost } from '@post/controllers/get-posts.controller';
 import { Router } from 'express';
 
 class PostRoutes {
@@ -10,6 +11,9 @@ class PostRoutes {
   }
 
   public routes(): Router {
+    this.router.get('/post/all/:page', authMiddleware.checkAuthentication, GetPost.prototype.posts);
+    this.router.get('/post/images/:page', authMiddleware.checkAuthentication, GetPost.prototype.postsWithImages);
+
     this.router.post('/post', authMiddleware.checkAuthentication, CreatePost.prototype.post);
     this.router.post('/post/image/post', authMiddleware.checkAuthentication, CreatePost.prototype.postWithImage);
 
