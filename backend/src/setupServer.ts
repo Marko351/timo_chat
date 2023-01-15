@@ -1,3 +1,4 @@
+import { SocketIOPostHandler } from './shared/sockets/post.socket';
 import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
 import http from 'http';
 import cors from 'cors';
@@ -113,6 +114,8 @@ export class TimoServer {
   }
 
   private socketIOConnections(io: Server): void {
-    log.info('');
+    const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+
+    postSocketHandler.listen();
   }
 }
