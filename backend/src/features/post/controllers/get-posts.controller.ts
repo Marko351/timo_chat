@@ -15,18 +15,18 @@ export class GetPost {
     const newSkip: number = skip === 0 ? skip : skip + 1;
 
     let posts: IPostDocument[] = [];
-    let totalPost = 0;
+    let totalPosts = 0;
 
     const cachedPosts: IPostDocument[] = await postCache.getPostsFromCache('post', newSkip, limit);
     if (cachedPosts.length) {
       posts = cachedPosts;
-      totalPost = await postCache.getTotalPostsFromCache();
+      totalPosts = await postCache.getTotalPostsFromCache();
     } else {
       posts = await postService.getPosts({}, skip, limit, { createdAt: -1 });
-      totalPost = await postService.postsCount();
+      totalPosts = await postService.postsCount();
     }
 
-    res.status(HTTP_STATUS.OK).json({ message: 'All posts', posts, totalPost });
+    res.status(HTTP_STATUS.OK).json({ message: 'All posts', posts, totalPosts });
   }
 
   public async postsWithImages(req: Request, res: Response): Promise<void> {
