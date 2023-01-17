@@ -20,6 +20,21 @@ class PostWorker {
       done(err as Error);
     }
   }
+
+  async deletePostFromDB(job: Job, done: DoneCallback): Promise<void> {
+    try {
+      const { keyOne, keyTwo } = job.data;
+
+      //add to db
+      await postService.deletePost(keyOne, keyTwo);
+
+      job.progress(100);
+      done(null, job.data);
+    } catch (err) {
+      log.error(err);
+      done(err as Error);
+    }
+  }
 }
 
 export const postWorker: PostWorker = new PostWorker();

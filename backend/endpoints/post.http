@@ -44,3 +44,9 @@ GET {{baseUrl}}/{{urlPath}}/post/images/1
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+
+###
+DELETE {{baseUrl}}/{{urlPath}}/post/63c440b43bd596fa0f48dfcf
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
