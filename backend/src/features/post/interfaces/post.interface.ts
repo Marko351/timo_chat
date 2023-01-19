@@ -1,4 +1,4 @@
-import { IReaction } from '@reaction/interfaces/reaction.interface';
+import { IReactions } from '@reaction/interfaces/reaction.interface';
 import { ObjectId } from 'mongodb';
 import mongoose, { Document } from 'mongoose';
 
@@ -17,7 +17,7 @@ export interface IPostDocument extends Document {
   feelings?: string;
   gifUrl?: string;
   privacy?: string;
-  reactions?: IReaction;
+  reactions?: IReactions;
   createdAt?: Date;
 }
 

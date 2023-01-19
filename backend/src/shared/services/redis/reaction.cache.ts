@@ -32,7 +32,7 @@ export class ReactionCache extends BaseCache {
       if (type) {
         await this.client.LPUSH(`reactions:${key}`, JSON.stringify(reaction));
         const dataToSave: string[] = ['reactions', JSON.stringify(postReactions)];
-        await this.client.HSET(`post:${key}`, dataToSave);
+        await this.client.HSET(`posts:${key}`, dataToSave);
       }
     } catch (err) {
       log.error(err);
@@ -54,7 +54,7 @@ export class ReactionCache extends BaseCache {
       await multi.exec();
 
       const dataToSave: string[] = ['reactions', JSON.stringify(postReactions)];
-      await this.client.HSET(`post:${key}`, dataToSave);
+      await this.client.HSET(`posts:${key}`, dataToSave);
     } catch (err) {
       log.error(err);
       throw new ServerError('Server error. Try again.');

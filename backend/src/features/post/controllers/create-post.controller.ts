@@ -43,7 +43,7 @@ export class CreatePost {
         sad: 0,
         wow: 0
       }
-    } as IPostDocument;
+    } as unknown as IPostDocument;
 
     // emit socket io event
     socketIOPostObject.emit('add post', createdPost);
@@ -97,7 +97,7 @@ export class CreatePost {
         sad: 0,
         wow: 0
       }
-    } as IPostDocument;
+    } as unknown as IPostDocument;
 
     // emit socket io event
     socketIOPostObject.emit('add post', createdPost);
