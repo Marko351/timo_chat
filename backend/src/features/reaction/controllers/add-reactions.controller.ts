@@ -5,8 +5,9 @@ import { ObjectId } from 'mongodb';
 import { socketIOPostObject } from '@socket/post.socket';
 import { BadRequestError } from '@global/helpers/error-handler';
 import { addReactionSchema } from '@reaction/schemes/reactions';
-import { IReactionDocument } from '@reaction/interfaces/reaction.interface';
+import { IReactionDocument, IReactionJob } from '@reaction/interfaces/reaction.interface';
 import { ReactionCache } from '@service/redis/reaction.cache';
+import { reactionQueue } from '@service/queues/reaction.queue';
 
 const reactionCache: ReactionCache = new ReactionCache();
 
@@ -24,6 +25,17 @@ export class AddReactions {
     } as IReactionDocument;
 
     await reactionCache.savePostReactionToCache(postId, reactionObject, postReactions, type, previousReaction);
+
+    const databaseReaction: IReactionJob = {
+      postId,
+      userTo,
+      userFrom: req.currentUser!.userId,
+      username: req.currentUser!.username,
+      type,
+      previousReaction,
+      reactionObject
+    };
+    reactionQueue.addReactionJob('addReactionToDB', databaseReaction);
 
     res.status(HTTP_STATUS.OK).json({ message: 'Reaction added successfully' });
   }

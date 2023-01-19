@@ -4,20 +4,30 @@ import { IReactionDocument, IReactionJob } from '@reaction/interfaces/reaction.i
 import { ReactionModel } from '@reaction/model/reaction.schema';
 import { UserCache } from '@service/redis/user.cache';
 import { IUserDocument } from '@user/interfaces/user.interface';
+import { omit } from 'lodash';
 
 const userCache: UserCache = new UserCache();
 
 class ReactionService {
   public async addReactionDataToDB(reactionData: IReactionJob): Promise<void> {
     const { postId, username, userFrom, userTo, type, previousReaction, reactionObject } = reactionData;
-
     const updatedReaction: [IUserDocument, IReactionDocument, IPostDocument] = (await Promise.all([
       userCache.getUserFromCache(`${userTo}`),
-      ReactionModel.replaceOne({ postId, type: previousReaction, username }, reactionObject, { upsert: true }),
+      ReactionModel.replaceOne({ postId, type: previousReaction, username }, previousReaction ? omit(reactionObject, ['_id']) : reactionObject, {
+        upsert: true
+      }),
       PostModel.findOneAndUpdate({ _id: postId }, { $inc: { [`reactions.${previousReaction}`]: -1, [`reactions.${type}`]: 1 } }, { new: true })
     ])) as unknown as [IUserDocument, IReactionDocument, IPostDocument];
 
     // send reactions notification
+  }
+
+  public async removeReactionDataFromDB(reactionData: IReactionJob): Promise<void> {
+    const { postId, previousReaction, username } = reactionData;
+    await Promise.all([
+      ReactionModel.deleteOne({ postId, type: previousReaction, username }),
+      PostModel.updateOne({ _id: postId }, { $inc: { [`reactions.${previousReaction}`]: -1 } }, { new: true })
+    ]);
   }
 }
 
