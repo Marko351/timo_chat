@@ -21,3 +21,21 @@ DELETE {{baseUrl}}/{{urlPath}}/post/reaction/63c9aed3c7ba075fa2781757/love/{"lik
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/reactions/63c9aed3c7ba075fa2781757
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/reactions/username/Pera351
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/single/reaction/username/63c9aed3c7ba075fa2781757/Pera351
+Content-Type: application/json
+Accept: application/json
+withCredentials: true

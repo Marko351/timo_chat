@@ -12,9 +12,9 @@ export class GetReactions {
   public async reaction(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
 
-    let reactions: [IReactionDocument[], number] | [] = await reactionCache.getReactionsFromCache(postId);
+    let reactions: [IReactionDocument[], number] = await reactionCache.getReactionsFromCache(postId);
 
-    if (!reactions.length) {
+    if (!reactions[0].length) {
       reactions = await reactionService.getPostReactions({ postId: new mongoose.Types.ObjectId(postId) }, { createdAt: -1 });
     }
 
@@ -40,6 +40,6 @@ export class GetReactions {
 
     const reactions: IReactionDocument[] = await reactionService.getReactionsByUsername(username);
 
-    res.status(HTTP_STATUS.OK).json({ message: 'All reaction by username', reactions });
+    res.status(HTTP_STATUS.OK).json({ message: 'All user reactions by username', reactions });
   }
 }
