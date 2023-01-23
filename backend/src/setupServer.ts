@@ -1,3 +1,4 @@
+import { SocketIOFollowerHandler } from './shared/sockets/follower.socket';
 import { SocketIOPostHandler } from './shared/sockets/post.socket';
 import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
 import http from 'http';
@@ -115,7 +116,9 @@ export class TimoServer {
 
   private socketIOConnections(io: Server): void {
     const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+    const followerSocketHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
 
     postSocketHandler.listen();
+    followerSocketHandler.listen();
   }
 }
