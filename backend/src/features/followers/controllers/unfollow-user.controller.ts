@@ -9,8 +9,8 @@ export class Remove {
   public async follower(req: Request, res: Response): Promise<void> {
     const { followerId, followeeId } = req.params;
 
-    const removeFollowerFromCache: Promise<void> = followerCache.removeFollowerFromCache(`followers:${req.currentUser!.userId}`, followeeId);
-    const removeFolloweeFromCache: Promise<void> = followerCache.removeFollowerFromCache(`following:${followeeId}`, followerId);
+    const removeFollowerFromCache: Promise<void> = followerCache.removeFollowerFromCache(`following:${req.currentUser!.userId}`, followeeId);
+    const removeFolloweeFromCache: Promise<void> = followerCache.removeFollowerFromCache(`followers:${followeeId}`, followerId);
 
     const followersCount: Promise<void> = followerCache.updateFollowersCount(followeeId, 'followersCount', -1);
     const followeeCount: Promise<void> = followerCache.updateFollowersCount(followerId, 'followingCount', -1);
