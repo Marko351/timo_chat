@@ -15,19 +15,19 @@ withCredentials: true
 }
 
 ###
-GET {{baseUrl}}/{{urlPath}}/post/comments/63cd310274df71eb06ed4230
+GET {{baseUrl}}/{{urlPath}}/post/comments/:postId
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/post/comments/names/63cd310274df71eb06ed4230
+GET {{baseUrl}}/{{urlPath}}/post/comments/names/:postId
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/post/single/comment/63cd310274df71eb06ed4230/63cebc3214ea02e26cce5153
+GET {{baseUrl}}/{{urlPath}}/post/single/comment/:postId/:commentId
 Content-Type: application/json
 Accept: application/json
 withCredentials: true

@@ -17,25 +17,25 @@ withCredentials: true
 }
 
 ###
-DELETE {{baseUrl}}/{{urlPath}}/post/reaction/63c9aed3c7ba075fa2781757/love/{"like":0,"love":0,"happy":0,"angry":0,"sad":0,"wow":0}
+DELETE {{baseUrl}}/{{urlPath}}/post/reaction/:postId/:previousReaction/{"like":0,"love":0,"happy":0,"angry":0,"sad":0,"wow":0}
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/post/reactions/63c9aed3c7ba075fa2781757
+GET {{baseUrl}}/{{urlPath}}/post/reactions/:postId
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/post/reactions/username/Pera351
+GET {{baseUrl}}/{{urlPath}}/post/reactions/username/:username
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/post/single/reaction/username/63c9aed3c7ba075fa2781757/Pera351
+GET {{baseUrl}}/{{urlPath}}/post/single/reaction/username/:postId/:username
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
