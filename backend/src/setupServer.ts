@@ -17,6 +17,7 @@ import 'express-async-errors';
 import applicationRoutes from '@root/routes';
 import { config } from '@root/config';
 import { CustomError, IErrorResponse } from '@global/helpers/error-handler';
+import { SocketIOUserHandler } from '@socket/user.socket';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
@@ -117,8 +118,10 @@ export class TimoServer {
   private socketIOConnections(io: Server): void {
     const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
     const followerSocketHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
+    const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io);
 
     postSocketHandler.listen();
     followerSocketHandler.listen();
+    userSocketHandler.listen();
   }
 }
