@@ -1,4 +1,5 @@
-import { INotificationDocument } from '@notifications/interfaces/notification.interface';
+import { INotificationDocument, INotification } from '@notifications/interfaces/notification.interface';
+import { notificationService } from '@service/db/notification.service';
 import mongoose, { model, Model, Schema } from 'mongoose';
 
 const notificationSchema: Schema = new Schema({
@@ -16,6 +17,17 @@ const notificationSchema: Schema = new Schema({
   gifUrl: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now() }
 });
+
+notificationSchema.methods.insertNotification = async (body: INotification) => {
+  await NotificationModel.create(body);
+
+  try {
+    const notifications: INotificationDocument[] = await notificationService.getNotifications(body.userTo);
+    return notifications;
+  } catch (err) {
+    return err;
+  }
+};
 
 const NotificationModel: Model<INotificationDocument> = model<INotificationDocument>('Notification', notificationSchema, 'Notification');
 export { NotificationModel };
