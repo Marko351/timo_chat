@@ -1,5 +1,6 @@
-import { SocketIOFollowerHandler } from './shared/sockets/follower.socket';
-import { SocketIOPostHandler } from './shared/sockets/post.socket';
+import { SocketIONotificationHandler } from '@socket/notification.socket';
+import { SocketIOFollowerHandler } from '@socket/follower.socket';
+import { SocketIOPostHandler } from '@socket/post.socket';
 import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
 import http from 'http';
 import cors from 'cors';
@@ -119,9 +120,11 @@ export class TimoServer {
     const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
     const followerSocketHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
     const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io);
+    const notificationSocketHandler: SocketIONotificationHandler = new SocketIONotificationHandler(io);
 
     postSocketHandler.listen();
     followerSocketHandler.listen();
     userSocketHandler.listen();
+    notificationSocketHandler.listen(io);
   }
 }
