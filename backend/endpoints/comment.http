@@ -8,8 +8,8 @@ Accept: application/json
 withCredentials: true
 
 {
-  "userTo": "63c43e5ebb8a1f5d2c752f2d",
-  "postId": "63cd310274df71eb06ed4230",
+  "userTo": "63d0ec191abc1dd5904ad297",
+  "postId": "63d4edd27352934339809fdb",
   "comment": "This is comment. Hi there!",
   "profilePicture": "https://res.cloudinary.com/dt5lgaara/image/upload/v1673805407/63c43e5ebb8a1f5d2c752f2d"
 }

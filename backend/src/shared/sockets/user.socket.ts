@@ -1,4 +1,3 @@
-import { IFollowers } from '@followers/interfaces/followers.interfaces';
 import { ISocketData } from '@user/interfaces/user.interface';
 import { Server, Socket } from 'socket.io';
 
