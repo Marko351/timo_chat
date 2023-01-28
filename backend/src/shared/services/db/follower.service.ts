@@ -1,3 +1,4 @@
+import { userService } from '@service/db/user.service';
 import { IFollowerData, IFollowerDocument } from '@followers/interfaces/followers.interfaces';
 import { FollowerModel } from '@followers/models/followers.scheme';
 import { INotificationDocument, INotificationTemplate } from '@notifications/interfaces/notification.interface';
@@ -21,7 +22,7 @@ class FollowerService {
       followerId: followerObjectId
     });
 
-    const users: Promise<BulkWriteResult> = UserModel.bulkWrite([
+    const users = await UserModel.bulkWrite([
       {
         updateOne: {
           filter: { _id: userId },
@@ -36,9 +37,9 @@ class FollowerService {
       }
     ]);
 
-    const response: [BulkWriteResult, IUserDocument | null] = await Promise.all([users, UserModel.findOne({ _id: followeeId })]);
+    const response: IUserDocument = await userService.getUserById(followeeId);
 
-    if (response[1]?.notifications.follows && userId !== followeeId) {
+    if (response?.notifications.follows && userId !== followeeId) {
       const notificationModel: INotificationDocument = new NotificationModel();
       const notifications = await notificationModel.insertNotification({
         userFrom: userId,
@@ -60,12 +61,12 @@ class FollowerService {
 
       // send to email queue
       const templateParams: INotificationTemplate = {
-        username: response[1].username!,
+        username: response.username!,
         message: `${username} is now following you!`,
         header: 'Follower Notification'
       };
       const template: string = notificationTemplate.notificationMessageTemplate(templateParams);
-      emailQueue.addEmailJob('followersEmail', { receiverEmail: response[1].email!, template, subject: 'Following notification' });
+      emailQueue.addEmailJob('followersEmail', { receiverEmail: response.email!, template, subject: 'Following notification' });
     }
   }
 
